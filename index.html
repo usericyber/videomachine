@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💜 Vexel - Video Editor</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #121212;
+            --bg-medium: #1e1e1e;
+            --bg-light: #2c2c2c;
+            --purple-primary: #8a2be2; /* BlueViolet */
+            --purple-light: #9b59b6;
+            --text-color: #e0e0e0;
+            --border-color: #383838;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            width: 95vw;
+            height: 95vh;
+            background-color: var(--bg-medium);
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 200px;
+            background-color: var(--bg-light);
+            padding: 20px;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: fadeInSlideLeft 0.7s ease-out;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--purple-primary);
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+
+        .tools-menu {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+        }
+
+        .tool-item:hover, .tool-item.active {
+            background-color: var(--purple-primary);
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .tool-item i {
+            font-size: 18px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: var(--bg-light);
+            border-radius: 10px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .project-name {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .export-btn {
+            background-color: var(--purple-primary);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .export-btn:hover {
+            background-color: var(--purple-light);
+            transform: translateY(-2px);
+        }
+
+        /* Video Preview */
+        .video-preview-container {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--bg-dark);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .video-preview {
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        /* Timeline */
+        .timeline-container {
+            background-color: var(--bg-light);
+            padding: 15px;
+            border-radius: 10px;
+            animation: fadeInSlideUp 0.8s ease-in-out;
+        }
+
+        .timeline-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .control-btn {
+            background-color: var(--bg-medium);
+            color: var(--text-color);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .control-btn:hover {
+            background-color: var(--purple-primary);
+            transform: scale(1.1);
+        }
+
+        .timeline-progress {
+            flex-grow: 1;
+            height: 8px;
+            background-color: var(--bg-dark);
+            border-radius: 4px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: var(--purple-primary);
+            border-radius: 4px;
+            transition: width 0.1s linear;
+        }
+
+        .timeline {
+            height: 80px;
+            background-color: var(--bg-dark);
+            border-radius: 8px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInSlideLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">Vexel 💜</div>
+            <nav class="tools-menu">
+                <a href="#" class="tool-item active"><i class="fas fa-film"></i> Media</a>
+                <a href="#" class="tool-item"><i class="fas fa-cut"></i> Trim</a>
+                <a href="#" class="tool-item"><i class="fas fa-music"></i> Audio</a>
+                <a href="#" class="tool-item"><i class="fas fa-text-width"></i> Text</a>
+                <a href="#" class="tool-item"><i class="fas fa-palette"></i> Filters</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="project-name">Project: My Awesome Video</div>
+                <button class="export-btn"><i class="fas fa-download"></i> Export</button>
+            </header>
+
+            <section class="video-preview-container">
+                <video class="video-preview" controls>
+                    <source src="placeholder.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </section>
+
+            <section class="timeline-container">
+                <div class="timeline-controls">
+                    <button class="control-btn play-btn"><i class="fas fa-play"></i></button>
+                    <button class="control-btn pause-btn" style="display: none;"><i class="fas fa-pause"></i></button>
+                    <div class="timeline-progress-wrapper">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <span class="time-display">00:00 / 00:00</span>
+                </div>
+                <div class="timeline">
+                    </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const video = document.querySelector('.video-preview');
+            const playBtn = document.querySelector('.play-btn');
+            const pauseBtn = document.querySelector('.pause-btn');
+            const progressBar = document.querySelector('.progress-bar');
+            const timeDisplay = document.querySelector('.time-display');
+
+            // Simple play/pause functionality
+            playBtn.addEventListener('click', () => {
+                video.play();
+                playBtn.style.display = 'none';
+                pauseBtn.style.display = 'block';
+            });
+
+            pauseBtn.addEventListener('click', () => {
+                video.pause();
+                pauseBtn.style.display = 'none';
+                playBtn.style.display = 'block';
+            });
+
+            // Update progress bar and time display
+            video.addEventListener('timeupdate', () => {
+                const progress = (video.currentTime / video.duration) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                const formatTime = (timeInSeconds) => {
+                    const minutes = Math.floor(timeInSeconds / 60);
+                    const seconds = Math.floor(timeInSeconds % 60);
+                    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                };
+
+                timeDisplay.textContent = `${formatTime(video.currentTime)} / ${formatTime(video.duration)}`;
+            });
+        });
+    </script>
+</body>
+</html>
